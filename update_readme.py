@@ -4,11 +4,15 @@ import os
 # Your Medium RSS feed URL
 feed_url = 'https://medium.com/feed/@vaniwalvekar'
 
+# How many posts to show in the README
+MAX_POSTS = 5
+
+
 def fetch_medium_posts(feed_url):
     try:
         feed = feedparser.parse(feed_url)
         posts = []
-        for entry in feed.entries:
+        for entry in feed.entries[:MAX_POSTS]:
             title = entry.title
             link = entry.link
             posts.append(f'- [{title}]({link})')
@@ -24,7 +28,7 @@ def update_readme(posts):
         return
     
     try:
-        with open(readme_path, 'r') as file:
+        with open(readme_path, 'r', encoding='utf-8') as file:
             content = file.read()
         
         # Find the placeholder and replace it with the latest posts
@@ -37,7 +41,7 @@ def update_readme(posts):
                 '\n'.join(posts) + '\n' +
                 content[end_index:]
             )
-            with open(readme_path, 'w') as file:
+            with open(readme_path, 'w', encoding='utf-8') as file:
                 file.write(new_content)
             print("README.md updated successfully.")
         else:
